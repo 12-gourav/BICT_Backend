@@ -110,3 +110,13 @@ export const UpdateNews = async (req, res) => {
     res.status(400).json({ msg: error });
   }
 };
+
+export const getNews = async (req, res) => {
+  try {
+    const data = await News.find({}).limit(5).sort({ createdAt: -1 });
+    res.status(200).json({ msg: "Fetch News", data });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ msg: error });
+  }
+};

@@ -206,3 +206,13 @@ export const UpdateStudent = async (req, res) => {
     res.status(400).json({ msg: error });
   }
 };
+
+export const recentAddmission = async (req, res) => {
+  try {
+    const result = await Student.find({}).limit(8).sort({ createdAt: -1 });
+    res.status(200).json({ msg: "Students Fetch Successfully", data: result });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ msg: error });
+  }
+};
