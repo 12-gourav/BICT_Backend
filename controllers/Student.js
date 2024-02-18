@@ -24,13 +24,7 @@ export const CreateStudent = async (req, res) => {
     } = req.body;
 
     const existUser = await Student.findOne({
-      $or: [
-        { email: email },
-        {
-          phone: phone,
-        },
-        { homePhone: homePhone },
-      ],
+      $or: [{ email: email }],
     });
 
     if (existUser) {
