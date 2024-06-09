@@ -20,6 +20,15 @@ const studentSchema = new mongoose.Schema(
     enterYear: String,
     course: String,
     duration: String,
+    addmissionID:{
+      type:String,
+      unique:true
+    },
+    status:{
+      type:String,
+      default:"Unpaid"
+   
+    }
   },
   {
     timestamps: true,

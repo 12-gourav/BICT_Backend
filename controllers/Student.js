@@ -1,4 +1,6 @@
+import { AddmissionTemplate } from "../html/index.js";
 import { Student } from "../models/Student.js";
+import { sendMails } from "../utils/sendMail.js";
 
 export const CreateStudent = async (req, res) => {
   try {
@@ -31,6 +33,18 @@ export const CreateStudent = async (req, res) => {
       return res.status(400).json({ msg: "User Already Exist" });
     }
 
+    const usedIds = new Set();
+
+    function generateUniqueId() {
+      let id;
+      do {
+        id = Math.floor(100000 + Math.random() * 900000).toString(); // Generate a 6-digit number
+      } while (usedIds.has(id)); // Ensure the ID is unique
+      usedIds.add(id); // Store the ID as used
+      return id;
+    }
+    const addmissionID = generateUniqueId();
+
     const data = await Student.create({
       firstName,
       lastName,
@@ -50,7 +64,25 @@ export const CreateStudent = async (req, res) => {
       enterYear,
       course,
       duration,
+      addmissionID: addmissionID,
     });
+
+    let subject =
+      "Your Application is Under Process - Bashar Institute of Computers";
+    let name = firstName + lastName;
+    await sendMails(
+      email,
+      subject,
+      "",
+      AddmissionTemplate(
+        name,
+        "Bashar Institute",
+        "bashar.info.bic@gmail.com",
+        "8127131213",
+        "https://bict.org.in/",
+        addmissionID
+      )
+    );
 
     return res
       .status(200)
@@ -168,6 +200,7 @@ export const UpdateStudent = async (req, res) => {
       enterYear,
       course,
       duration,
+      status
     } = req.body;
 
     const data = await Student.findByIdAndUpdate(
@@ -191,6 +224,7 @@ export const UpdateStudent = async (req, res) => {
         enterYear,
         course,
         duration,
+        status:status
       }
     );
 
@@ -205,6 +239,20 @@ export const recentAddmission = async (req, res) => {
   try {
     const result = await Student.find({}).limit(8).sort({ createdAt: -1 });
     res.status(200).json({ msg: "Students Fetch Successfully", data: result });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ msg: error });
+  }
+};
+
+
+
+export const checkaddmission = async (req, res) => {
+  try {
+    const {id} = req.query;
+    const result = await Student.find({addmissionID:id},'firstName lastName course status');
+
+    res.status(200).json({ msg: "Students Record Successfully", data: result });
   } catch (error) {
     console.log(error);
     res.status(400).json({ msg: error });

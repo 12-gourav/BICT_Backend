@@ -3,7 +3,6 @@ import {
   CreateCertificate,
   DeleteCertificate,
   GetCertificates,
-  SearchCertificate,
   SearchCertificates,
   UpdateCertificate,
   singleCertificate,
@@ -15,7 +14,7 @@ Router.post("/create/certificate", CreateCertificate);
 Router.get("/get/certificate", GetCertificates);
 Router.post("/update/certificate", UpdateCertificate);
 Router.get("/delete/certificate", DeleteCertificate);
-Router.get("/search/certificate", SearchCertificate);
+Router.get("/search/certificate", SearchCertificates);
 Router.get("/search/single/certificates", singleCertificate);
 
 export default Router;

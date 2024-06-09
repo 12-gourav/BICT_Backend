@@ -5,6 +5,7 @@ import {
   GetStudent,
   SearchStudent,
   UpdateStudent,
+  checkaddmission,
   recentAddmission,
 } from "../controllers/Student.js";
 
@@ -16,5 +17,6 @@ Router.post("/update/student", UpdateStudent);
 Router.get("/delete/student", DeleteStudent);
 Router.get("/search/student", SearchStudent);
 Router.get("/get/student2", recentAddmission);
+Router.get("/check/addmission", checkaddmission);
 
 export default Router;

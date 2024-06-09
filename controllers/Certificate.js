@@ -193,6 +193,8 @@ export const SearchCertificates = async (req, res) => {
   try {
     const { page, limit, query } = req.query;
 
+
+
     const pageNumber = parseInt(page) || 1;
     const pageLimit = parseInt(limit) || 10;
 
