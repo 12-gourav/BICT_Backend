@@ -10,7 +10,7 @@ export const CreateGallery = async (req, res) => {
     cloudinary.v2.uploader
       .upload_stream(
         {
-          resource_type: "raw", // Specify 'raw' for buffer data
+          resource_type: "image", 
           public_id: `backup_${Date.now()}`,
         },
         async (error, result) => {

@@ -6,7 +6,7 @@ export const CreateCertificate = async (req, res) => {
     const { name, course, category, certificate } = req.body;
 
     const { img } = req.files;
-    console.log(img);
+
     const exist = await Certificate.findOne({ certificate: certificate });
     if (exist) {
       return res.status(400).json({ msg: "Certificate Already Exist" });
@@ -15,7 +15,7 @@ export const CreateCertificate = async (req, res) => {
     cloudinary.v2.uploader
       .upload_stream(
         {
-          resource_type: "raw", // Specify 'raw' for buffer data
+          resource_type: "image",
           public_id: `backup_${Date.now()}`,
         },
         async (error, result) => {
@@ -23,7 +23,7 @@ export const CreateCertificate = async (req, res) => {
             console.error(error);
             return res.status(400).json({ msg: error });
           } else {
-            console.log(result);
+    
             try {
               const data = await Certificate.create({
                 name: name,
@@ -85,7 +85,7 @@ export const GetCertificates = async (req, res) => {
 export const UpdateCertificate = async (req, res) => {
   try {
     const { id, name, course, category, certificate, flag } = req.body;
-    console.log(flag);
+
     if (flag == "z") {
       const { img } = req.files;
       const data = await Certificate.findById({ _id: id });
@@ -193,29 +193,37 @@ export const SearchCertificates = async (req, res) => {
   try {
     const { page, limit, query } = req.query;
 
-
-
     const pageNumber = parseInt(page) || 1;
     const pageLimit = parseInt(limit) || 10;
 
     const skip = (pageNumber - 1) * pageLimit;
 
     const total = await Certificate.countDocuments({
-      $or: [
-        { name: { $regex: query, $options: "i" } },
-        { course: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
-        { certificate: { $regex: query, $options: "i" } },
-      ],
+      $or: query
+        .split(" ")
+        .filter((word) => word.trim() !== "")
+        .map((word) => ({
+          $or: [
+            { name: { $regex: word, $options: "i" } },
+            { course: { $regex: word, $options: "i" } },
+            { category: { $regex: word, $options: "i" } },
+            { certificate: { $regex: word, $options: "i" } },
+          ],
+        })),
     });
 
     const data = await Certificate.find({
-      $or: [
-        { name: { $regex: query, $options: "i" } },
-        { course: { $regex: query, $options: "i" } },
-        { category: { $regex: query, $options: "i" } },
-        { certificate: { $regex: query, $options: "i" } },
-      ],
+      $or: query
+        .split(" ")
+        .filter((word) => word.trim() !== "")
+        .map((word) => ({
+          $or: [
+            { name: { $regex: word, $options: "i" } },
+            { course: { $regex: word, $options: "i" } },
+            { category: { $regex: word, $options: "i" } },
+            { certificate: { $regex: word, $options: "i" } },
+          ],
+        })),
     })
       .skip(skip)
       .limit(pageLimit)
@@ -249,3 +257,15 @@ export const singleCertificate = async (req, res) => {
     res.status(400).json({ msg: error });
   }
 };
+
+
+export const downloadImage = async(req,res)=>{
+  try {
+    const {id} = req.query;
+
+
+    
+  } catch (error) {
+    console.log(error);
+  }
+}

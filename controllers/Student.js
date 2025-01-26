@@ -132,21 +132,31 @@ export const SearchStudent = async (req, res) => {
     const skip = (pageNumber - 1) * pageLimit;
 
     const total = await Student.countDocuments({
-      $or: [
-        { firstName: { $regex: query, $options: "i" } },
-        { email: { $regex: query, $options: "i" } },
-        { phone: { $regex: query, $options: "i" } },
-        { homePhone: { $regex: query, $options: "i" } },
-      ],
+      $or: query
+        .split(" ") // Split the query into keywords (e.g., "Nishant Kumar" -> ["Nishant", "Kumar"])
+        .filter((word) => word.trim() !== "") // Remove empty strings from the array
+        .map((word) => ({
+          $or: [
+            { firstName: { $regex: word, $options: "i" } },
+            { email: { $regex: word, $options: "i" } },
+            { phone: { $regex: word, $options: "i" } },
+            { homePhone: { $regex: word, $options: "i" } },
+          ],
+        })),
     });
 
     const data = await Student.find({
-      $or: [
-        { firstName: { $regex: query, $options: "i" } },
-        { email: { $regex: query, $options: "i" } },
-        { phone: { $regex: query, $options: "i" } },
-        { homePhone: { $regex: query, $options: "i" } },
-      ],
+      $or: query
+        .split(" ") 
+        .filter((word) => word.trim() !== "") 
+        .map((word) => ({
+          $or: [
+            { firstName: { $regex: word, $options: "i" } },
+            { email: { $regex: word, $options: "i" } },
+            { phone: { $regex: word, $options: "i" } },
+            { homePhone: { $regex: word, $options: "i" } },
+          ],
+        })),
     })
       .skip(skip)
       .limit(pageLimit)
@@ -200,7 +210,7 @@ export const UpdateStudent = async (req, res) => {
       enterYear,
       course,
       duration,
-      status
+      status,
     } = req.body;
 
     const data = await Student.findByIdAndUpdate(
@@ -224,7 +234,7 @@ export const UpdateStudent = async (req, res) => {
         enterYear,
         course,
         duration,
-        status:status
+        status: status,
       }
     );
 
@@ -245,12 +255,13 @@ export const recentAddmission = async (req, res) => {
   }
 };
 
-
-
 export const checkaddmission = async (req, res) => {
   try {
-    const {id} = req.query;
-    const result = await Student.find({addmissionID:id},'firstName lastName course status');
+    const { id } = req.query;
+    const result = await Student.find(
+      { addmissionID: id },
+      "firstName lastName course status"
+    );
 
     res.status(200).json({ msg: "Students Record Successfully", data: result });
   } catch (error) {

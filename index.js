@@ -13,6 +13,7 @@ import GalleryRoutes from "./routes/Gallery.js";
 import CertificateRoutes from "./routes/Certificate.js";
 import UserRoutes from "./routes/User.js";
 import ExamRoutes from "./routes/ExamRoutes.js";
+import ResultRoutes from "./routes/Result.js";
 
 config({ path: "./config/.env" });
 
@@ -44,6 +45,7 @@ app.use("/api/v1", GalleryRoutes);
 app.use("/api/v1", CertificateRoutes);
 app.use("/api/v1", UserRoutes);
 app.use("/api/v1", ExamRoutes);
+app.use("/api/v1",ResultRoutes);
 
 app.get("/", (req, res) => {
   res.status(200).json({ msg: "Server is Runing Perfect" });
