@@ -32,7 +32,7 @@ export const UpdateResult = async (req, res) => {
         fatherName: father,
         rollNumber: roll,
         course: course,
-        status: Boolean(status),
+        status: status,
       }
     );
 

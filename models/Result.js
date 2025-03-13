@@ -6,7 +6,7 @@ const resultSchema = new mongoose.Schema(
     fatherName: String,
     course: String,
     rollNumber: { type: String, unique: true },
-    status: Boolean,
+    status: String,
   },
   { timestamps: true }
 );
